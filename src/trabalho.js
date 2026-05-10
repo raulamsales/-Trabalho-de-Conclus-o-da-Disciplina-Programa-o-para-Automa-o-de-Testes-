@@ -1,7 +1,8 @@
 export class ServicoDePagamento {
 
-     lista = [
-    ];
+    constructor() {
+        this.lista = []
+    }
 
     Pagar(CodigoBarras, Empresa, Valor) {
 
