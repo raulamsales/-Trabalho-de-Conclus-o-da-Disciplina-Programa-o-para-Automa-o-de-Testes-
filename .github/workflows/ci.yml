@@ -1,0 +1,40 @@
+name: "Pipeline de Testes Automatizados"
+
+on:
+  push:
+    branches:
+      - master
+
+  workflow_dispatch:
+
+  schedule:
+    - cron: '0 13 * * *'
+
+jobs:
+  testes-automatizados:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar código do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Executar testes e gerar relatório
+        run: |
+          mkdir -p reports
+          set -o pipefail
+          npm test 2>&1 | tee reports/test-report.txt
+
+      - name: Salvar relatório da execução
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-report
+          path: reports/
